@@ -24,11 +24,11 @@ export function Carrito() {
   // Estado para controlar qué producto específico se desea eliminar
   const [itemAEliminar, setItemAEliminar] = useState(null);
 
-  // El precio de los productos ya incluye el IVA
+  // El precio de los productos ya incluye el IVA (Ingeniería inversa)
   const totalAPagar = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
   const subtotal = Math.round(totalAPagar / (1 + IVA_PORCENTAJE));
   const iva = totalAPagar - subtotal;
-  
+
   const totalUnidades = carrito.reduce((acc, item) => acc + item.cantidad, 0);
 
   // Validación de inicio de sesión antes de proceder con el pago
@@ -159,11 +159,11 @@ export function Carrito() {
             </div>
 
             <div className="flex justify-between text-slate-600 dark:text-slate-300">
-              <span>Subtotal (sin IVA)</span>
+              <span>Subtotal</span>
               <span>{formatearPrecio(subtotal)}</span>
             </div>
             <div className="flex justify-between text-slate-600 dark:text-slate-300 mt-2">
-              <span>IVA (19% incluido)</span>
+              <span>IVA (19%)</span>
               <span>{formatearPrecio(iva)}</span>
             </div>
             <div className="flex justify-between text-xl font-bold text-slate-900 dark:text-slate-100 mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
@@ -189,7 +189,99 @@ export function Carrito() {
         </div>
       </div>
 
-      {/* Modales de confirmación... */}
+      {/* Modal de confirmación para eliminar un producto individual */}
+      {itemAEliminar && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              ¿Eliminar producto?
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 mt-2">
+              ¿Estás seguro de que deseas quitar a{" "}
+              <span className="font-semibold text-slate-700 dark:text-slate-200">
+                "{itemAEliminar.name}"
+              </span>{" "}
+              del carrito?
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setItemAEliminar(null)}
+                className="flex-1 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmarEliminacionItem}
+                className="flex-1 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors duration-200"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación de pedido */}
+      {mostrarConfirmacion && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              ¿Confirmas tu pedido?
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 mt-2">
+              Total a pagar: {formatearPrecio(totalAPagar)}
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setMostrarConfirmacion(false)}
+                className="flex-1 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmarPedido}
+                className="flex-1 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors duration-200"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación para vaciar carrito */}
+      {mostrarConfirmacionVaciar && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              ¿Vaciar el carrito?
+            </h3>
+            <p className="text-slate-500 dark:text-slate-400 mt-2">
+              Se {totalUnidades === 1 ? "eliminará 1 personaje" : `eliminarán los ${totalUnidades} personajes`} agregado{totalUnidades === 1 ? "" : "s"}.
+            </p>
+            <div className="mt-6 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setMostrarConfirmacionVaciar(false)}
+                className="flex-1 py-2 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-200"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmarVaciado}
+                className="flex-1 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors duration-200"
+              >
+                Vaciar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
