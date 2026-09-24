@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #12131C 0%, #1A1C29 100%);
+  color: #F0E6D2;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
